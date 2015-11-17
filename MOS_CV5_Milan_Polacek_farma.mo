@@ -34,7 +34,7 @@ model Farma
     Farma.konektor konektor1 annotation(Placement(visible = true, transformation(origin = {-40, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-25, 5}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
   equation
     konektor1.q = CL;
-    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Line(origin = {0, 18.74}, points = {{-22.0126, 28.5714}, {8.90072, 28.5714}, {32.3199, 8.8993}, {34.1935, -15.9251}, {16.8632, -37.4707}, {-11.2398, -37.4707}, {-33.2539, -20.6089}, {-33.2539, 6.08899}, {-20.1391, 29.0398}, {-21.0759, 31.8501}, {-20.1391, 29.9766}, {-16.392, 29.9766}, {-20.1391, 32.3185}}, color = {170, 0, 255})}));
+    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Line(origin = {0, 18.74}, points = {{-22.0126, 28.5714}, {8.90072, 28.5714}, {32.3199, 8.8993}, {34.1935, -15.9251}, {16.8632, -37.4707}, {-11.2398, -37.4707}, {-33.2539, -20.6089}, {-33.2539, 6.08899}, {-20.1391, 29.0398}, {-21.0759, 31.8501}, {-20.1391, 29.9766}, {-16.392, 29.9766}, {-20.1391, 32.3185}}, color = {170, 0, 255}), Text(origin = {-2, -62}, extent = {{-68, 20}, {68, -20}}, textString = "%name")}));
   end eliminace_nulteho_radu;
 
   model eliminace_prvniho_radu
@@ -42,7 +42,7 @@ model Farma
     Farma.konektor konektor1 annotation(Placement(visible = true, transformation(origin = {-40, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-25, 5}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
   equation
     konektor1.q = konektor1.conc * CL;
-    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Line(origin = {0, 18.74}, points = {{-22.0126, 28.5714}, {8.90072, 28.5714}, {32.3199, 8.8993}, {34.1935, -15.9251}, {16.8632, -37.4707}, {-11.2398, -37.4707}, {-33.2539, -20.6089}, {-33.2539, 6.08899}, {-20.1391, 29.0398}, {-21.0759, 31.8501}, {-20.1391, 29.9766}, {-16.392, 29.9766}, {-20.1391, 32.3185}}, color = {170, 0, 255})}));
+    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Line(origin = {0, 18.74}, points = {{-22.0126, 28.5714}, {8.90072, 28.5714}, {32.3199, 8.8993}, {34.1935, -15.9251}, {16.8632, -37.4707}, {-11.2398, -37.4707}, {-33.2539, -20.6089}, {-33.2539, 6.08899}, {-20.1391, 29.0398}, {-21.0759, 31.8501}, {-20.1391, 29.9766}, {-16.392, 29.9766}, {-20.1391, 32.3185}}, color = {170, 0, 255}), Text(origin = {-3, -62}, extent = {{-75, 26}, {75, -26}}, textString = "%name")}));
   end eliminace_prvniho_radu;
 
   model Jedno_kompartmentovy_model
@@ -58,11 +58,11 @@ model Farma
   end Jedno_kompartmentovy_model;
 
   model Dvou_kompartmentovy_model
-    Farma.absorbce absorbce1(F = 1) annotation(Placement(visible = true, transformation(origin = {-45, 25}, extent = {{-45, -45}, {45, 45}}, rotation = 0)));
-    Farma.kompartment kompartment1(C0 = 0, Vd = 100) annotation(Placement(visible = true, transformation(origin = {40, 60}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
+    Farma.absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-45, 25}, extent = {{-45, -45}, {45, 45}}, rotation = 0)));
+    Farma.kompartment kompartment1(C0 = 0, Vd = 10) annotation(Placement(visible = true, transformation(origin = {40, 60}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
     Farma.kompartment kompartment2(C0 = 0, Vd = 10) annotation(Placement(visible = true, transformation(origin = {47.5, -7.5}, extent = {{-27.5, -27.5}, {27.5, 27.5}}, rotation = 0)));
-    Farma.eliminace_nulteho_radu eliminace_nulteho_radu1(CL = 0.1) annotation(Placement(visible = true, transformation(origin = {75, -75}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
-    Modelica.Blocks.Sources.Pulse pulse1(amplitude = 10, width = 10, period = 1) annotation(Placement(visible = true, transformation(origin = {-80, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    Farma.eliminace_nulteho_radu eliminace_nulteho_radu1(CL = 1) annotation(Placement(visible = true, transformation(origin = {75, -75}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
+    Modelica.Blocks.Sources.Pulse pulse1(amplitude = 10, width = 10, period = 1, nperiod = 4) annotation(Placement(visible = true, transformation(origin = {-80, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
   equation
     connect(pulse1.y, absorbce1.u) annotation(Line(points = {{-69, 80}, {-54.6835, 80}, {-54.6835, 44.0506}, {-54.6835, 44.0506}}, color = {0, 0, 127}));
     connect(kompartment2.konektor1, eliminace_nulteho_radu1.konektor1) annotation(Line(points = {{64, -13}, {73.4177, -13}, {73.4177, -47.5949}, {46.5823, -47.5949}, {46.5823, -72.9114}, {68.3544, -72.9114}, {68.3544, -72.9114}}));
@@ -72,14 +72,14 @@ model Farma
   end Dvou_kompartmentovy_model;
 
   model Jedno_kompartmentovy_model_1r
-    Farma.absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-40, -60}, extent = {{-65, -65}, {65, 65}}, rotation = 0)));
-    Modelica.Blocks.Sources.Pulse pulse1(amplitude = 10, width = 10, period = 1, nperiod = -1) annotation(Placement(visible = true, transformation(origin = {-80, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Farma.eliminace_prvniho_radu eliminace_prvniho_radu1(CL = 10) annotation(Placement(visible = true, transformation(origin = {60, -60}, extent = {{-40, -40}, {40, 40}}, rotation = 0)));
+    Modelica.Blocks.Sources.Pulse pulse1(amplitude = 10, width = 10, period = 1, nperiod = 4) annotation(Placement(visible = true, transformation(origin = {-80, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Farma.kompartment kompartment1(C0 = 0, Vd = 10) annotation(Placement(visible = true, transformation(origin = {40, 20}, extent = {{-35, -35}, {35, 35}}, rotation = 0)));
+    Farma.absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-42, -60}, extent = {{-65, -65}, {65, 65}}, rotation = 0)));
+    Farma.eliminace_prvniho_radu eliminace_prvniho_radu1(CL = 1) annotation(Placement(visible = true, transformation(origin = {60, -62}, extent = {{-40, -40}, {40, 40}}, rotation = 0)));
   equation
-    connect(absorbce1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-1, -86}, {13.6709, -86}, {13.6709, 10.1266}, {35.443, 13}, {33, 13}}));
-    connect(eliminace_prvniho_radu1.konektor1, kompartment1.konektor1) annotation(Line(points = {{50, -58}, {35.9494, -58}, {33, 8}, {33, 13}}));
-    connect(absorbce1.u, pulse1.y) annotation(Line(points = {{-53, -34}, {-74.9367, -34}, {-74.9367, -17.2152}, {-53.6709, -17.2152}, {-53.6709, 0}, {-68.3544, 0}, {-68.3544, 0}}, color = {0, 0, 127}));
+    connect(eliminace_prvniho_radu1.konektor1, kompartment1.konektor1) annotation(Line(points = {{50, -60}, {35.9494, -60}, {35.9494, 8}, {33, 8}, {33, 13}}));
+    connect(absorbce1.u, pulse1.y) annotation(Line(points = {{-55, -34}, {-74.9367, -34}, {-74.9367, -17.2152}, {-53.6709, -17.2152}, {-53.6709, 0}, {-68.3544, 0}}, color = {0, 0, 127}));
+    connect(absorbce1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-3, -86}, {13.6709, -86}, {13.6709, 13}, {33, 13}}));
     annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})));
   end Jedno_kompartmentovy_model_1r;
 
