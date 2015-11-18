@@ -86,61 +86,130 @@ model Farma
   model Davkovac
     parameter Real Cmin;
     parameter Real Cmax;
+    Boolean x;
     Modelica.Blocks.Interfaces.RealInput u annotation(Placement(visible = true, transformation(origin = {-100, 0}, extent = {{-20, -20}, {20, 20}}, rotation = 0), iconTransformation(origin = {-80, -78}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
     Modelica.Blocks.Interfaces.RealOutput y annotation(Placement(visible = true, transformation(origin = {99, -1}, extent = {{-19, -19}, {19, 19}}, rotation = 0), iconTransformation(origin = {80, -80}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
-    konektor konektor1 annotation(Placement(visible = true, transformation(origin = {2, 90}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-1, 75}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
+  initial equation
+    x = true;
   equation
-    konektor1.q = 0;
-    if konektor1.conc < Cmin then
-      y = 10;
-    elseif konektor1.conc > Cmax then
-      y = 0;
+    when u < Cmin then
+      x = true;
+    elsewhen u > Cmax then
+      x = false;
+    end when;
+    if x then
+      y = 4;
     else
-      y = u;
+      y = 0;
     end if;
     annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Ellipse(origin = {-3, -3}, fillColor = {187, 206, 12}, fillPattern = FillPattern.Solid, extent = {{-41, 41}, {41, -41}}, endAngle = 360)}));
   end Davkovac;
 
-  model Davkovani_diskretne
-    Modelica.Blocks.Sources.Pulse pulse1(amplitude = 10, width = 10, period = 1, nperiod = 10) annotation(Placement(visible = true, transformation(origin = {-84, 68}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    eliminace_prvniho_radu eliminace_prvniho_radu1(CL = 5) annotation(Placement(visible = true, transformation(origin = {90, 28}, extent = {{-24, -24}, {24, 24}}, rotation = 0)));
-    Davkovac davkovac1(Cmin = 8, Cmax = 18) annotation(Placement(visible = true, transformation(origin = {-42, 64}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {11, 5}, extent = {{-21, -21}, {21, 21}}, rotation = 0)));
-    kompartment kompartment1(C0 = 5, Vd = 20) annotation(Placement(visible = true, transformation(origin = {9, 51}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
+  model senzor
+    Modelica.Blocks.Interfaces.RealOutput y annotation(Placement(visible = true, transformation(origin = {95, 1}, extent = {{-31, -31}, {31, 31}}, rotation = 0), iconTransformation(origin = {73, 1}, extent = {{-27, -27}, {27, 27}}, rotation = 0)));
+    konektor konektor1 annotation(Placement(visible = true, transformation(origin = {-90, 2}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-86, 0}, extent = {{-14, -14}, {14, 14}}, rotation = 0)));
   equation
-    connect(absorbce1.konektor1, eliminace_prvniho_radu1.konektor1) annotation(Line(points = {{24, -3}, {56, -3}, {56, 30}, {80, 30}, {80, 30}}));
-    connect(davkovac1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-42, 72}, {4, 72}, {4, 46}}));
-    connect(kompartment1.konektor1, eliminace_prvniho_radu1.konektor1) annotation(Line(points = {{4, 46}, {56, 46}, {56, 29}, {84, 29}}));
-    connect(davkovac1.y, absorbce1.u) annotation(Line(points = {{-34, 56}, {-24, 56}, {-24, 14}, {6, 14}, {6, 14}}, color = {0, 0, 127}));
-    connect(pulse1.y, davkovac1.u) annotation(Line(points = {{-73, 68}, {-62, 68}, {-62, 56}, {-50, 56}, {-50, 56}}, color = {0, 0, 127}));
+    y = konektor1.conc;
+    konektor1.q = 0;
+    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Ellipse(origin = {-14, -8}, fillColor = {85, 0, 0}, fillPattern = FillPattern.Forward, extent = {{-50, 80}, {50, -80}}, endAngle = 360)}));
+  end senzor;
+
+  model Davkovani_diskretne
+    Davkovac davkovac1(Cmin = 1, Cmax = 2) annotation(Placement(visible = true, transformation(origin = {-52, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-30, -48}, extent = {{-22, -22}, {22, 22}}, rotation = 0)));
+    senzor senzor1 annotation(Placement(visible = true, transformation(origin = {-80, 22}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    eliminace_nulteho_radu eliminace_nulteho_radu1(CL = 1) annotation(Placement(visible = true, transformation(origin = {76, -36}, extent = {{-30, -30}, {30, 30}}, rotation = 0)));
+    kompartment kompartment1(C0 = 0, Vd = 10) annotation(Placement(visible = true, transformation(origin = {29, 35}, extent = {{-19, -19}, {19, 19}}, rotation = 0)));
+  equation
+    connect(senzor1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-80, 31}, {-80, 31}, {-80, 40}, {2, 40}, {2, 30}, {22, 30}, {22, 30}}));
+    connect(absorbce1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-17, -57}, {0, -57}, {0, 31}, {25, 31}}));
+    connect(eliminace_nulteho_radu1.konektor1, kompartment1.konektor1) annotation(Line(points = {{68.5, -34.5}, {2, -34.5}, {2, 30}, {24, 30}, {24, 30}, {24, 30}}));
+    connect(senzor1.y, davkovac1.u) annotation(Line(points = {{-80, 15}, {-65.5, 15}, {-65.5, 14}, {-60, 14}}, color = {0, 0, 127}));
+    connect(davkovac1.y, absorbce1.u) annotation(Line(points = {{-44, 14}, {-34, 14}, {-34, -22}, {-60, -22}, {-60, -40}, {-34, -40}, {-34, -40}}, color = {0, 0, 127}));
     annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})));
   end Davkovani_diskretne;
 
-  model P_regulator
+  model Regulator
     parameter Real Cmin;
     parameter Real Cmax;
-    constant Real P;
+    parameter Real p;
     Real Cavg;
-    Modelica.Blocks.Interfaces.RealInput u annotation(Placement(visible = true, transformation(origin = {-98, 4.88498e-15}, extent = {{-38, -38}, {38, 38}}, rotation = 0), iconTransformation(origin = {-79, -1}, extent = {{-21, -21}, {21, 21}}, rotation = 0)));
-    Modelica.Blocks.Interfaces.RealOutput y annotation(Placement(visible = true, transformation(origin = {102, 0}, extent = {{-44, -44}, {44, 44}}, rotation = 0), iconTransformation(origin = {75, -1}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
+    Modelica.Blocks.Interfaces.RealInput u annotation(Placement(visible = true, transformation(origin = {-99, 1}, extent = {{-29, -29}, {29, 29}}, rotation = 0), iconTransformation(origin = {-74, 0}, extent = {{-20, -20}, {20, 20}}, rotation = 0)));
+    Modelica.Blocks.Interfaces.RealOutput y annotation(Placement(visible = true, transformation(origin = {101, -1}, extent = {{-27, -27}, {27, 27}}, rotation = 0), iconTransformation(origin = {82, 0}, extent = {{-18, -18}, {18, 18}}, rotation = 0)));
   equation
-    Cavg = (Cmax + Cmin) / 2;
-    y = (Cavg - u) * P;
-    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Ellipse(origin = {-4, -4}, fillColor = {255, 170, 255}, fillPattern = FillPattern.Solid, extent = {{-52, 54}, {52, -54}}, endAngle = 360), Text(origin = {-4, 0}, extent = {{-20, 36}, {20, -36}}, textString = "P"), Text(origin = {-1, -71}, extent = {{-75, 21}, {75, -21}}, textString = "%name")}));
-  end P_regulator;
+    Cavg = (Cmax + Cmin) / 2 - u;
+    if y < 0 then
+      y = 0;
+    else
+      y = Cavg + ((Cmax + Cmin) / 2 - u) * p;
+    end if;
+    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Rectangle(origin = {-2, -2}, extent = {{-66, 66}, {66, -66}}), Text(origin = {-3, 0}, extent = {{-39, 18}, {39, -18}}, textString = "%name")}));
+  end Regulator;
 
   model Davkovani_spojite
-    Modelica.Blocks.Sources.Pulse pulse1(amplitude = 10, width = 10, period = 1, nperiod = 10) annotation(Placement(visible = true, transformation(origin = {-82, 82}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    kompartment kompartment1(C0 = 5, Vd = 20) annotation(Placement(visible = true, transformation(origin = {30, 14}, extent = {{-16, -16}, {16, 16}}, rotation = 90)));
-    absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-19, 1}, extent = {{-23, -23}, {23, 23}}, rotation = 0)));
-    eliminace_prvniho_radu eliminace_prvniho_radu1(CL = 5) annotation(Placement(visible = true, transformation(origin = {84, -10}, extent = {{-40, -40}, {40, 40}}, rotation = 0)));
-    P_regulator p_regulator1(Cmin = 0.08, Cmax = 0.12) annotation(Placement(visible = true, transformation(origin = {-41, 51}, extent = {{-25, -25}, {25, 25}}, rotation = -90)));
+    Regulator regulator1(Cmin = 2, Cmax = 3) annotation(Placement(visible = true, transformation(origin = {-32, 24}, extent = {{-26, -26}, {26, 26}}, rotation = 0)));
+    absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-37, -37}, extent = {{-23, -23}, {23, 23}}, rotation = 0)));
+    kompartment kompartment1(C0 = 0, Vd = 10) annotation(Placement(visible = true, transformation(origin = {35, 29}, extent = {{-15, -15}, {15, 15}}, rotation = 0)));
+    eliminace_nulteho_radu eliminace_nulteho_radu1 annotation(Placement(visible = true, transformation(origin = {67, -35}, extent = {{-25, -25}, {25, 25}}, rotation = 0)));
+    senzor senzor1 annotation(Placement(visible = true, transformation(origin = {-77, 23}, extent = {{-13, -13}, {13, 13}}, rotation = 0)));
   equation
-    connect(pulse1.y, p_regulator1.u) annotation(Line(points = {{-71, 82}, {-41, 82}, {-41, 71}}, color = {0, 0, 127}));
-    connect(p_regulator1.y, absorbce1.u) annotation(Line(points = {{-41, 32}, {-40, 32}, {-40, 10}, {-24, 10}}, color = {0, 0, 127}));
-    connect(eliminace_prvniho_radu1.konektor1, kompartment1.konektor1) annotation(Line(points = {{74, -8}, {33, -8}, {33, 11}}));
-    connect(absorbce1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-5, -8}, {33, -8}, {33, 11}}));
+    connect(senzor1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-88, 23}, {-88, 23}, {-88, 52}, {22, 52}, {22, 26}, {32, 26}, {32, 26}}));
+    connect(eliminace_nulteho_radu1.konektor1, kompartment1.konektor1) annotation(Line(points = {{61, -34}, {22, -34}, {22, 26}, {30, 26}, {30, 26}}));
+    connect(absorbce1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-23, -46}, {14, -46}, {14, 26}, {32, 26}, {32, 26}, {32, 26}}));
+    connect(regulator1.y, absorbce1.u) annotation(Line(points = {{-11, 24}, {-2, 24}, {-2, -10}, {-56, -10}, {-56, -28}, {-42, -28}, {-42, -28}}, color = {0, 0, 127}));
+    connect(senzor1.y, regulator1.u) annotation(Line(points = {{-68, 23}, {-52, 23}, {-52, 22}, {-52, 22}}, color = {0, 0, 127}));
     annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})));
   end Davkovani_spojite;
+
+  model Denni_Davkovac
+    parameter Real doseLen = 1 / 60;
+    parameter Real dpd = 1;
+    parameter Real dose = 1 / 6;
+    discrete Real pulseTime;
+    Real prePt;
+    Real doseFlow;
+    Real doseInterval;
+    Modelica.Blocks.Interfaces.RealOutput y annotation(Placement(visible = true, transformation(origin = {-68, 22}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {79, -77}, extent = {{-21, -21}, {21, 21}}, rotation = 0)));
+  initial equation
+    24 / dpd = doseInterval;
+    pulseTime = time + doseInterval;
+  equation
+    when time > pre(pulseTime) + doseLen then
+      prePt = pre(pulseTime);
+      pulseTime = time + doseInterval;
+    end when;
+    24 / dpd = doseInterval;
+    dose = doseLen * doseFlow;
+    if pulseTime < time and pulseTime + doseLen > time then
+      y = doseFlow;
+    else
+      y = 0;
+    end if;
+    annotation(Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2}), graphics = {Rectangle(origin = {-20, 1}, extent = {{-72, 93}, {72, -93}}), Text(origin = {-33, 14}, extent = {{-45, 66}, {45, -66}}, textString = "%name")}));
+  end Denni_Davkovac;
+
+  model Davkovani_pravidelne_denne
+    absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-24, 16}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
+    kompartment kompartment1(C0 = 0, Vd = 10) annotation(Placement(visible = true, transformation(origin = {53, 13}, extent = {{-15, -15}, {15, 15}}, rotation = 0)));
+    eliminace_prvniho_radu eliminace_prvniho_radu1 annotation(Placement(visible = true, transformation(origin = {58, -32}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
+    Denni_Davkovac denni_Davkovac1(dpd = 1) annotation(Placement(visible = true, transformation(origin = {-66, 28}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  equation
+    connect(kompartment1.konektor1, eliminace_prvniho_radu1.konektor1) annotation(Line(points = {{50, 10}, {30, 10}, {30, -30}, {52, -30}, {52, -30}}));
+    connect(denni_Davkovac1.y, absorbce1.u) annotation(Line(points = {{-58, 20}, {-28, 20}, {-28, 22}, {-28, 22}}, color = {0, 0, 127}));
+    connect(absorbce1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-14, 10}, {50, 10}, {50, 8}, {50, 8}}));
+    annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})));
+  end Davkovani_pravidelne_denne;
+
+  model Davkovani_pravidelne_po6hod
+    absorbce absorbce1(F = 10) annotation(Placement(visible = true, transformation(origin = {-24, 16}, extent = {{-16, -16}, {16, 16}}, rotation = 0)));
+    kompartment kompartment1(C0 = 0, Vd = 10) annotation(Placement(visible = true, transformation(origin = {45, 13}, extent = {{-15, -15}, {15, 15}}, rotation = 0)));
+    eliminace_prvniho_radu eliminace_prvniho_radu1 annotation(Placement(visible = true, transformation(origin = {51, -37}, extent = {{-19, -19}, {19, 19}}, rotation = 0)));
+    Denni_Davkovac denni_Davkovac1(dpd = 6) annotation(Placement(visible = true, transformation(origin = {-72, 28}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  equation
+    connect(kompartment1.konektor1, eliminace_prvniho_radu1.konektor1) annotation(Line(points = {{42, 10}, {22, 10}, {22, -38}, {44, -38}, {44, -38}}));
+    connect(denni_Davkovac1.y, absorbce1.u) annotation(Line(points = {{-64, 20}, {-28, 20}, {-28, 22}, {-28, 22}}, color = {0, 0, 127}));
+    connect(absorbce1.konektor1, kompartment1.konektor1) annotation(Line(points = {{-14, 10}, {42, 10}}));
+    annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})));
+  end Davkovani_pravidelne_po6hod;
   annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})), Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {2, 2})));
 end Farma;
